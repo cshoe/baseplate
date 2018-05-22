@@ -125,7 +125,7 @@ def publish_traces():
 
     publisher_raw_cfg = dict(config_parser.items("trace-publisher:" + args.queue_name))
     publisher_cfg = config.parse_config(publisher_raw_cfg, {
-        "zipkin_api_url": config.Endpoint,
+        "zipkin_api_url": config.String,
         "post_timeout": config.Optional(config.Integer, POST_TIMEOUT_DEFAULT),
         "max_batch_size": config.Optional(config.Integer, MAX_BATCH_SIZE_DEFAULT),
         "retry_limit": config.Optional(config.Integer, RETRY_LIMIT_DEFAULT),
@@ -142,7 +142,7 @@ def publish_traces():
     batcher = TimeLimitedBatch(inner_batch, MAX_BATCH_AGE)
     metrics_client = metrics_client_from_config(publisher_raw_cfg)
     publisher = ZipkinPublisher(
-        publisher_cfg.zipkin_api_url.address,
+        publisher_cfg.zipkin_api_url,
         metrics_client,
         post_timeout=publisher_cfg.post_timeout,
     )
